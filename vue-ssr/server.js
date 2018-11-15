@@ -3,6 +3,7 @@ const express = require('express');
 const server = express();
 const fs = require('fs');
 const path = require('path');
+const uuid = require('uuid-v4');
 
 const html2pdf = require("html2pdf-node");
 //obtain bundle
@@ -38,11 +39,13 @@ server.get('*', (req, res) => {
             } else {
 
               console.log('html',html);
-              html2pdf.generatePdfOfHtml( html.toString())
+              const pdfFilename = uuid()
+              /*'Doc-'+Date.now() */
+               html2pdf.generatePdfOfHtml( html.toString(),pdfFilename)
                 .then(pdfFilePath=>{
                   console.log('pdfFilePath',pdfFilePath)
 
-                  res.end(html)
+                  res.redirect('/dist/'+pdfFilename+'.pdf')
                 })
                 .catch(err=>{
                   console.log('err',err)
